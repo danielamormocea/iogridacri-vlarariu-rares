@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+</head>
+<body>
+<title>Birthday Banquet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Ma+Shan+Zheng&family=Young+Serif&display=swap">
+<style>
+/* Layout: a Chinese restaurant menu as a book. Lacquer-red cover, then one page per course;
+   a page only turns once its puzzle is solved. A longevity noodle (长寿面) tracks progress on top. */
+:root{
+  --paper:#E3EADF;      /* celadon porcelain */
+  --card:#F7F5EC;       /* menu paper */
+  --ink:#2B1C15;        /* soy sauce */
+  --ink-soft:#5F4C40;
+  --line:#C3CDBF;
+  --lacquer:#A8231B;
+  --lacquer-deep:#7E1712;
+  --on-lacquer:#F8EAD2;
+  --gold:#C99520;
+  --bamboo:#C9A46A;
+  --bamboo-dark:#977340;
+  --noodle:#D9B979;
+  --jade:#2F7356;
+  --on-jade:#F1F4EE;
+  --mustard:#D3A126;
+  --on-mustard:#2B1C15;
+  --ash:#737B72;
+  --on-ash:#F1F4EE;
+  --key:#D5DDD1;
+  --hl:rgba(201,149,32,.28);
+  --spine:rgba(43,28,21,.22);
+  --shadow:rgba(43,28,21,.45);
+  --fold:#E9DDBE;
+  /* wheel slices: same in both themes */
+  --w-red:#A8231B; --w-red-ink:#F8EAD2;
+  --w-gold:#D9A93A; --w-gold-ink:#2B1C15;
+  --w-jade:#2F7356; --w-jade-ink:#F1F4EE;
+  --w-cream:#F3E6C8; --w-cream-ink:#2B1C15;
+
+  --f-brush:"Ma Shan Zheng","Kaiti SC","STKaiti","KaiTi",serif;
+  --f-display:"Young Serif",Georgia,"Times New Roman",serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#131A17; --card:#1E2622; --ink:#EEE5D4; --ink-soft:#B4A895; --line:#33403A;
+    --gold:#E2B24A; --bamboo:#8E7046; --bamboo-dark:#C9A46A; --noodle:#B08E52;
+    --jade:#4C9C77; --on-jade:#0F1512; --mustard:#D9A83A; --on-mustard:#1A120D;
+    --ash:#3B443F; --on-ash:#EEE5D4; --key:#2C3632; --hl:rgba(226,178,74,.22);
+    --spine:rgba(0,0,0,.45); --shadow:rgba(0,0,0,.7); --fold:#3A443E;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131A17; --card:#1E2622; --ink:#EEE5D4; --ink-soft:#B4A895; --line:#33403A;
+  --gold:#E2B24A; --bamboo:#8E7046; --bamboo-dark:#C9A46A; --noodle:#B08E52;
+  --jade:#4C9C77; --on-jade:#0F1512; --mustard:#D9A83A; --on-mustard:#1A120D;
+  --ash:#3B443F; --on-ash:#EEE5D4; --key:#2C3632; --hl:rgba(226,178,74,.22);
+  --spine:rgba(0,0,0,.45); --shadow:rgba(0,0,0,.7); --fold:#3A443E;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+.stage{overflow-x:clip}
+.wrap{max-width:480px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0}
+h2:focus{outline:none}
+p{margin:0}
+
+/* ---------- Top: title row + noodle progress ---------- */
+.top{padding-block:18px 18px;display:grid;gap:14px}
+.top-row{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:.85rem;color:var(--ink-soft)}
+.linkish{background:none;border:0;padding:0;text-decoration:underline;text-underline-offset:3px;color:var(--ink-soft);font-size:.85rem}
+.top-title{font-family:var(--f-display);font-size:1rem;color:var(--ink);background:none;border:0;padding:0}
+.prog{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));position:relative}
+.prog::before,.prog .fill{content:"";position:absolute;top:9px;height:18px;left:calc(100%/12);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='18'%3E%3Cpath d='M0 9 C10 1 30 17 40 9' stroke='black' stroke-width='4' fill='none'/%3E%3C/svg%3E") repeat-x left center/40px 18px;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='18'%3E%3Cpath d='M0 9 C10 1 30 17 40 9' stroke='black' stroke-width='4' fill='none'/%3E%3C/svg%3E") repeat-x left center/40px 18px}
+.prog::before{right:calc(100%/12);background:var(--line)}
+.prog .fill{background:var(--noodle);width:0;transition:width .8s ease}
+.prog li{position:relative;z-index:1}
+.prog button{background:none;border:0;padding:0;display:grid;justify-items:center;gap:4px;width:100%}
+.prog .s{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;font-family:var(--f-brush);font-size:1.3rem;line-height:1;
+  background:var(--paper);border:2px solid var(--line);color:var(--ink-soft);transition:background .3s,border-color .3s}
+.prog .lbl{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--ink-soft)}
+.prog li.done .s{background:var(--lacquer);border-color:var(--lacquer);color:var(--on-lacquer)}
+.prog li.cur .s{border-color:var(--gold);box-shadow:0 0 0 3px var(--hl)}
+.prog li.cur .lbl{color:var(--ink)}
+.prog li.locked{opacity:.4}
+.prog li.locked button{cursor:default}
+
+/* ---------- Book & page turning ---------- */
+.book{position:relative;perspective:2400px;padding-bottom:48px}
+.page{position:relative;background:var(--card);border:1px solid var(--line);border-radius:6px 18px 18px 6px;
+  padding:26px 22px 20px 30px;display:grid;gap:18px;align-content:start;transform-origin:left center;backface-visibility:hidden;
+  box-shadow:inset 16px 0 16px -14px var(--spine),0 22px 34px -26px var(--shadow)}
+.page.turn-out{position:absolute;inset:0 0 auto 0;z-index:3;animation:turnOut .95s cubic-bezier(.5,.05,.3,1) forwards}
+.page.turn-in{z-index:3;animation:turnIn .95s cubic-bezier(.5,.05,.3,1) forwards}
+.page.under{position:absolute;inset:0 0 auto 0;z-index:1}
+.page.turn-out::after,.page.turn-in::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(90deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.28));animation:shade .95s forwards}
+.page.turn-in::after{animation-direction:reverse}
+@keyframes turnOut{from{transform:rotateY(0)}to{transform:rotateY(-180deg)}}
+@keyframes turnIn{from{transform:rotateY(-180deg)}to{transform:rotateY(0)}}
+@keyframes shade{from{opacity:0}to{opacity:1}}
+
+.page-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center}
+.pseal{width:48px;height:48px;border-radius:11px;background:var(--lacquer);color:var(--on-lacquer);font-family:var(--f-brush);font-size:1.8rem;
+  display:grid;place-items:center;box-shadow:inset 0 0 0 3px var(--lacquer),inset 0 0 0 5px var(--on-lacquer)}
+.kicker{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--lacquer);display:block}
+:root[data-theme="dark"] .kicker{color:var(--gold)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .kicker{color:var(--gold)}}
+.page-head h2{font-size:clamp(1.45rem,4.4vw,1.9rem);line-height:1.15}
+.intro{color:var(--ink-soft);max-width:60ch}
+.page-foot{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;border-top:1px dashed var(--line);padding-top:16px;margin-top:4px}
+.pno{display:none;font-family:var(--f-mono);font-size:.8rem;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.ear{position:absolute;right:-1px;bottom:-1px;width:0;height:0;border:0;padding:0;border-radius:0 0 18px 0;
+  background:linear-gradient(315deg,var(--paper) 50%,var(--fold) 50%);box-shadow:-3px -3px 6px -3px var(--spine);transition:width .35s,height .35s}
+.page.can-turn .ear{width:38px;height:38px;animation:ear 2.4s 1s ease-in-out infinite}
+@keyframes ear{0%,70%,100%{width:38px;height:38px}80%{width:50px;height:50px}}
+
+.btn{border:0;border-radius:999px;padding:10px 18px;font-weight:600;font-size:.92rem;background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn:hover{box-shadow:inset 0 0 0 1.5px var(--ink-soft)}
+.btn.primary{background:var(--lacquer);color:var(--on-lacquer);box-shadow:none}
+.btn.primary:hover{background:var(--lacquer-deep)}
+.btn:disabled{opacity:.55;cursor:default;background:transparent;color:var(--ink-soft);box-shadow:inset 0 0 0 1.5px var(--line)}
+.msg{font-size:.92rem;color:var(--ink-soft);min-height:1.4em}
+.msg.bad{color:var(--lacquer)}
+.msg.good{color:var(--jade);font-weight:600}
+:root[data-theme="dark"] .msg.bad{color:#E0675C}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .msg.bad{color:#E0675C}}
+
+/* ---------- Cover ---------- */
+.page.cover{background:var(--lacquer);color:var(--on-lacquer);border-color:var(--lacquer-deep);padding:40px 34px 30px 40px;
+  box-shadow:inset 0 0 0 10px var(--lacquer),inset 0 0 0 12px var(--gold),inset 0 0 0 16px var(--lacquer),inset 0 0 0 17px var(--gold),
+    inset 20px 0 18px -14px rgba(0,0,0,.35),0 22px 34px -26px var(--shadow)}
+.page.cover{min-height:min(74svh,600px);align-content:center}
+.cover-in{display:grid;gap:26px;align-items:center}
+.cover-text{display:grid;gap:22px;min-width:0;justify-items:start}
+.eyebrow{font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;opacity:.85}
+.cover h1{font-size:clamp(2.2rem,10vw,3rem);line-height:1.05}
+.cover h1 em{font-style:normal;color:var(--gold);display:block}
+.cover p{max-width:30ch;font-size:1.05rem;opacity:.95}
+.cover-from{display:grid;gap:2px;border-left:3px solid var(--gold);padding-left:12px}
+.cover-from span{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;opacity:.8}
+.cover-from strong{font-family:var(--f-display);font-weight:400;font-size:1.15rem;line-height:1.25}
+.cover-from small{font-size:.86rem;opacity:.85}
+.btn.gold{background:var(--gold);color:#2B1C15;box-shadow:none;padding:12px 22px;font-size:1rem}
+.btn.gold:hover{background:#DDAB3A}
+.brush{order:-1;font-family:var(--f-brush);font-size:clamp(3.4rem,17vw,4.6rem);line-height:1;letter-spacing:.06em;white-space:nowrap;
+  text-shadow:3px 3px 0 var(--lacquer-deep)}
+.brush small{font-family:var(--f-body);font-size:.7rem;letter-spacing:.2em;opacity:.75;text-shadow:none}
+.cover-note{font-size:.8rem;opacity:.8;max-width:56ch}
+.page.cover .ear{background:linear-gradient(315deg,var(--paper) 50%,var(--lacquer-deep) 50%)}
+
+/* ---------- Cryptic clue basket ---------- */
+details.howto{background:var(--paper);border-radius:14px;padding:12px 16px}
+details.howto summary{cursor:pointer;font-weight:600}
+details.howto div{display:grid;gap:8px;padding-top:10px;color:var(--ink-soft);max-width:62ch}
+.basket{background:var(--paper);border-radius:18px;padding:0 20px 20px;display:grid;gap:14px;overflow:hidden}
+.basket::before{content:"";height:14px;margin-inline:-20px;background:repeating-linear-gradient(90deg,var(--bamboo) 0 7px,var(--bamboo-dark) 7px 8px);border-bottom:2px solid var(--bamboo-dark)}
+.basket-head{display:flex;justify-content:flex-end;min-height:0}
+.stamp{font-family:var(--f-brush);font-size:1.05rem;color:var(--jade);border:2px solid var(--jade);border-radius:6px;padding:0 8px;transform:rotate(-6deg)}
+.stamp.revealed{color:var(--ink-soft);border-color:var(--ink-soft)}
+.clue{font-family:var(--f-display);font-size:clamp(1.3rem,3.8vw,1.6rem);line-height:1.4}
+.clue .enum{font-family:var(--f-body);font-size:.85em;color:var(--ink-soft);white-space:nowrap}
+.clue span[data-r]{transition:background .3s,box-shadow .3s;border-radius:3px}
+.clue.show-def [data-r="def"]{box-shadow:inset 0 -3px 0 var(--jade)}
+.clue.show-wp [data-r="ind"]{background:var(--hl);box-shadow:inset 0 -2px 0 var(--gold)}
+.clue.show-wp [data-r="fod"]{box-shadow:inset 0 -2px 0 var(--lacquer)}
+.legend{display:none;flex-wrap:wrap;gap:6px 16px;font-size:.82rem;color:var(--ink-soft)}
+.legend i{display:inline-block;width:18px;height:4px;vertical-align:middle;margin-right:6px;border-radius:2px}
+.basket.wp .legend{display:flex}
+.explain{color:var(--ink-soft);max-width:60ch;border-left:3px solid var(--bamboo);padding-left:12px}
+.boxes{position:relative;display:flex;flex-wrap:wrap;gap:14px;width:max-content;max-width:100%}
+.group{display:flex;gap:5px}
+.box{width:40px;height:46px;border:2px solid var(--line);border-radius:8px;display:grid;place-items:center;
+  font-family:var(--f-mono);font-weight:700;font-size:1.25rem;background:var(--card);transition:border-color .15s,background .3s,color .3s}
+.box.full{border-color:var(--ink-soft)}
+.box.cur{border-color:var(--gold)}
+.solved .box{background:var(--jade);border-color:var(--jade);color:var(--on-jade)}
+.revealed-state .box{background:var(--ash);border-color:var(--ash);color:var(--on-ash)}
+.boxes input{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;border:0;cursor:text;caret-color:transparent}
+.boxes input:disabled{cursor:default}
+.boxes:focus-within .box.cur{box-shadow:0 0 0 3px var(--hl)}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.row-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* ---------- Guess the dish ---------- */
+.dish{display:grid;gap:12px;justify-items:center}
+.dish-rules{font-size:.92rem;color:var(--ink-soft);justify-self:stretch;display:grid;gap:6px}
+.dish-rules .chips{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.8rem}
+.dish-rules .chips span{display:inline-flex;align-items:center;gap:6px}
+.dish-rules .chips b{width:12px;height:12px;border-radius:4px;display:inline-block}
+.board{display:grid;gap:6px;width:min(250px,100%)}
+.wrow{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.tile{aspect-ratio:1;max-width:100%;border:2px solid var(--line);border-radius:10px;display:grid;place-items:center;
+  font-family:var(--f-mono);font-weight:700;font-size:clamp(1.3rem,6vw,1.7rem);background:var(--card)}
+.tile.filled{border-color:var(--ink-soft);animation:pop .12s}
+.tile.c{background:var(--jade);border-color:var(--jade);color:var(--on-jade)}
+.tile.p{background:var(--mustard);border-color:var(--mustard);color:var(--on-mustard)}
+.tile.a{background:var(--ash);border-color:var(--ash);color:var(--on-ash)}
+.tile.flip{animation:flip .5s both}
+@keyframes pop{50%{transform:scale(1.08)}}
+@keyframes flip{0%{transform:rotateX(90deg)}100%{transform:rotateX(0)}}
+.whints{justify-self:stretch;display:grid;gap:6px}
+.whint{background:var(--paper);border-radius:10px;padding:8px 12px;font-size:.9rem;border-left:3px solid var(--gold)}
+.kb{display:grid;gap:6px;width:100%;max-width:520px;user-select:none}
+.kb-row{display:flex;gap:4px;justify-content:center}
+.key{flex:1 1 0;min-width:0;height:46px;border:0;border-radius:8px;background:var(--key);color:var(--ink);font-weight:700;font-size:.95rem;padding:0;touch-action:manipulation}
+.key.wide{flex:1.6 1 0;font-size:.72rem;letter-spacing:.04em;text-transform:uppercase}
+.key.c{background:var(--jade);color:var(--on-jade)}
+.key.p{background:var(--mustard);color:var(--on-mustard)}
+.key.a{background:var(--ash);color:var(--on-ash)}
+.kb-note{font-size:.78rem;color:var(--ink-soft);text-align:center}
+.wmsg{text-align:center}
+.znuni{background:var(--paper);border-radius:12px;padding:12px 14px;font-size:.92rem;color:var(--ink-soft)}
+
+/* ---------- Wheel of fortune ---------- */
+.wheel-wrap{display:grid;justify-items:center;gap:16px}
+.wheel{width:min(340px,100%);max-width:100%;aspect-ratio:1;display:block;overflow:visible}
+.wheel .slice{transition:opacity .6s}
+.wheel.won .slice:not(.winner),.wheel.won .stxt:not(.winner){opacity:.32}
+.w-brand{font-family:var(--f-body);font-weight:700;font-size:10.5px;letter-spacing:.12em}
+.w-val{font-family:var(--f-display);font-size:22px}
+.w-chf{font-family:var(--f-body);font-weight:600;font-size:9px;letter-spacing:.14em}
+.btn.spin{padding:13px 28px;font-size:1.02rem}
+.win{width:100%;border:2px dashed var(--gold);border-radius:16px;padding:16px 18px;display:grid;gap:4px;text-align:center;background:var(--paper);animation:rise .6s both}
+.win .v-label{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--ink-soft)}
+.win strong{font-family:var(--f-display);font-weight:400;font-size:clamp(1.5rem,5vw,2rem);color:var(--lacquer)}
+:root[data-theme="dark"] .win strong{color:var(--gold)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .win strong{color:var(--gold)}}
+.win p{color:var(--ink-soft);font-size:.92rem}
+
+/* ---------- Red envelope ---------- */
+.dessert{display:grid;gap:20px;justify-items:center}
+.envelope{position:relative;width:min(240px,100%);aspect-ratio:5/7;max-width:100%;border:0;padding:0;border-radius:14px;
+  background:var(--lacquer);perspective:900px;box-shadow:0 18px 30px -18px rgba(60,10,6,.6);transition:transform .2s}
+.envelope:hover{transform:translateY(-3px) rotate(-1deg)}
+.envelope .flap{position:absolute;inset:0 0 auto 0;height:44%;background:var(--lacquer-deep);clip-path:polygon(0 0,100% 0,50% 100%);
+  transform-origin:top;transition:transform .7s cubic-bezier(.3,.7,.2,1);border-radius:14px 14px 0 0;z-index:2}
+.envelope .fu{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) rotate(180deg);width:76px;height:76px;border-radius:50%;
+  background:var(--gold);color:var(--lacquer-deep);font-family:var(--f-brush);font-size:2.7rem;display:grid;place-items:center;z-index:3;transition:opacity .4s,transform .4s;
+  box-shadow:inset 0 0 0 4px var(--gold),inset 0 0 0 6px var(--lacquer-deep)}
+.envelope .tag{position:absolute;inset:auto 0 22px 0;text-align:center;color:var(--on-lacquer);font-weight:600;font-size:.88rem;letter-spacing:.06em}
+.envelope .tag span{display:block;font-family:var(--f-brush);font-size:1.6rem;letter-spacing:.1em}
+.envelope.open{cursor:default;transform:none}
+.envelope.open .flap{transform:rotateX(180deg)}
+.envelope.open .fu{opacity:0;transform:translate(-50%,-80%) rotate(180deg) scale(.6)}
+.fu-note{font-size:.82rem;color:var(--ink-soft);text-align:center;max-width:46ch}
+.gift{width:100%;display:grid;gap:22px;animation:rise .7s both}
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.letter h3{font-size:clamp(1.7rem,5vw,2.2rem);line-height:1.1}
+.letter .greet{font-family:var(--f-brush);font-size:1.6rem;color:var(--lacquer)}
+:root[data-theme="dark"] .letter .greet{color:var(--gold)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .letter .greet{color:var(--gold)}}
+.voucher{border:2px dashed var(--gold);border-radius:16px;padding:22px 18px;display:grid;gap:10px;justify-items:center;text-align:center;background:var(--paper)}
+.v-brandname{font-family:var(--f-display);font-size:2rem;line-height:1.1}
+.v-amount{font-family:var(--f-mono);font-weight:700;font-size:1.1rem;color:var(--lacquer)}
+.alles{font-family:var(--f-display);font-size:clamp(1.6rem,7.5vw,2.1rem);line-height:1.15;text-align:center;text-wrap:balance}
+.from{text-align:center;justify-items:center}
+.v-label{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--ink-soft)}
+.v-title{font-family:var(--f-display);font-size:1.4rem;line-height:1.2}
+.voucher code{font-family:var(--f-mono);font-weight:700;font-size:clamp(1.15rem,5vw,1.6rem);letter-spacing:.06em;word-break:break-all;user-select:all}
+.voucher .row-actions{justify-content:space-between}
+.v-brand{width:100%;min-height:120px;border-radius:10px;display:grid;place-items:center;background:var(--card);border:1.5px dashed var(--line);
+  color:var(--ink-soft);font-size:.85rem;text-align:center;padding:12px;overflow:hidden}
+.v-brand.has-img{border:0;background:#fff;padding:16px;min-height:0}
+.v-brand img{display:block;max-width:100%;max-height:180px;object-fit:contain}
+.fortune{font-style:italic;color:var(--ink-soft);background:var(--paper);border-radius:6px;padding:10px 14px;border-left:3px solid var(--bamboo)}
+.from{display:grid;gap:2px;padding-top:10px;border-top:1px solid var(--line)}
+.from-name{font-family:var(--f-display);font-size:1.3rem;line-height:1.2}
+.from-list{font-size:.9rem;color:var(--ink-soft)}
+
+@media (max-width:560px){
+  .page{padding:22px 16px 18px 22px}
+  .page.cover{padding:34px 26px 26px 30px}
+  .cover-in{gap:10px}
+  .pseal{width:42px;height:42px;font-size:1.5rem}
+  .box{width:34px;height:42px;font-size:1.1rem}
+  .group{gap:4px}
+  .boxes{gap:10px}
+  .basket{padding:0 14px 16px}
+  .basket::before{margin-inline:-14px}
+  .key{height:46px;font-size:.88rem}
+  .kb-row{gap:3px}
+  .prog .lbl{font-size:.6rem;letter-spacing:.04em}
+  .prog .s{width:32px;height:32px;font-size:1.15rem}
+  .prog::before,.prog .fill{top:7px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+
+<div class="stage">
+  <div class="wrap top" id="top">
+    <div class="top-row">
+      <button class="top-title" id="to-cover">Rares' birthday banquet</button>
+      <button class="linkish" id="reset">Start over</button>
+    </div>
+    <ol class="prog" id="prog" aria-label="Menu pages"><span class="fill" id="fill" aria-hidden="true"></span></ol>
+  </div>
+
+  <main class="wrap book" id="book">
+
+    <!-- Page 0: cover -->
+    <section class="page cover" data-p="0" aria-label="Cover">
+      <div class="cover-in">
+        <div class="cover-text">
+          <h1 tabindex="-1">La mulți ani,<em id="cover-name">Rares!</em></h1>
+          <p>To unlock your birthday gift, first make your way through the whole menu.</p>
+          <button class="btn gold" data-next>Open the menu</button>
+        </div>
+        <div class="brush" aria-hidden="true">生日快乐</div>
+      </div>
+      <button class="ear" data-next tabindex="-1" aria-hidden="true"></button>
+    </section>
+
+    <!-- Pages 1-3: cryptic clues -->
+    <section class="page" data-p="1" hidden>
+      <header class="page-head"><span class="pseal" aria-hidden="true">一</span><div><span class="kicker">Starter · 1 of 3</span><h2 tabindex="-1">The first basket</h2></div></header>
+      <details class="howto">
+        <summary>How cryptic clues work</summary>
+        <div>
+          <p>Every clue is really two clues glued together. One end is a plain <b>definition</b> of the answer. The rest is <b>wordplay</b> that builds the same answer another way: hide it inside other words, swap letters around, add pieces together.</p>
+          <p>Small signal words tell you which trick is in play: "in" often means hidden, "backwards" means reversed, "cooking" means shuffle the letters. The number in brackets is the answer length. Each basket has three hints if you get stuck.</p>
+        </div>
+      </details>
+      <div class="slot"></div>
+      <div class="page-foot"><button class="btn" data-prev>← Back</button><span class="pno">1 / 6</span><button class="btn primary" data-next>Turn the page ↷</button></div>
+      <button class="ear" data-next tabindex="-1" aria-hidden="true"></button>
+    </section>
+
+    <section class="page" data-p="2" hidden>
+      <header class="page-head"><span class="pseal" aria-hidden="true">二</span><div><span class="kicker">Starter · 2 of 3</span><h2 tabindex="-1">The second basket</h2></div></header>
+      <div class="slot"></div>
+      <div class="page-foot"><button class="btn" data-prev>← Back</button><span class="pno">2 / 6</span><button class="btn primary" data-next>Turn the page ↷</button></div>
+      <button class="ear" data-next tabindex="-1" aria-hidden="true"></button>
+    </section>
+
+    <section class="page" data-p="3" hidden>
+      <header class="page-head"><span class="pseal" aria-hidden="true">三</span><div><span class="kicker">Starter · 3 of 3</span><h2 tabindex="-1">The last basket</h2></div></header>
+      <div class="slot"></div>
+      <div class="page-foot"><button class="btn" data-prev>← Back</button><span class="pno">3 / 6</span><button class="btn primary" data-next>Turn the page ↷</button></div>
+      <button class="ear" data-next tabindex="-1" aria-hidden="true"></button>
+    </section>
+
+    <!-- Page 4: Wordle -->
+    <section class="page" data-p="4" hidden>
+      <header class="page-head"><span class="pseal" aria-hidden="true">四</span><div><span class="kicker">Main course</span><h2 tabindex="-1">Guess the mystery dish</h2></div></header>
+      <p class="intro">Five letters, six tries. The chef is from Zürich.</p>
+      <div class="dish">
+        <div class="dish-rules">
+          <div class="chips">
+            <span><b style="background:var(--jade)"></b>right letter, right spot</span>
+            <span><b style="background:var(--mustard)"></b>in the word, wrong spot</span>
+            <span><b style="background:var(--ash)"></b>not in the word</span>
+          </div>
+        </div>
+        <div class="board" id="board" aria-label="Guesses"></div>
+        <p class="msg wmsg" id="wmsg" aria-live="polite"></p>
+        <div class="kb" id="kb" aria-label="Keyboard"></div>
+        <div class="whints" id="whints"></div>
+        <p class="znuni" id="znuni" hidden><b>Znüni</b> is the Swiss mid-morning snack, eaten around nine. Basically Zürich's dim sum.</p>
+      </div>
+      <div class="page-foot"><button class="btn" data-prev>← Back</button><span class="pno">4 / 6</span><button class="btn primary" data-next>Turn the page ↷</button></div>
+      <button class="ear" data-next tabindex="-1" aria-hidden="true"></button>
+    </section>
+
+    <!-- Page 5: Wheel -->
+    <section class="page" data-p="5" hidden>
+      <header class="page-head"><span class="pseal" aria-hidden="true">五</span><div><span class="kicker">Dessert · 幸运转盘</span><h2 tabindex="-1">The wheel of fortune</h2></div></header>
+      <p class="intro">Your present is a voucher. Which shop, and how much? The wheel decides. It only spins once, so make it count.</p>
+      <div class="wheel-wrap">
+        <svg class="wheel" id="wheel" viewBox="-172 -176 344 350" role="img" aria-label="Wheel of fortune with eight voucher prizes"></svg>
+        <button class="btn primary spin" id="spin">Spin the wheel</button>
+        <div class="win" id="win" hidden aria-live="polite">
+          <span class="v-label">The wheel has spoken</span>
+          <strong id="win-title"></strong>
+          <p>It nearly stopped on the 1000. Nearly.</p>
+        </div>
+      </div>
+      <div class="page-foot"><button class="btn" data-prev>← Back</button><span class="pno">5 / 6</span><button class="btn primary" data-next>Turn the page ↷</button></div>
+      <button class="ear" data-next tabindex="-1" aria-hidden="true"></button>
+    </section>
+
+    <!-- Page 6: Red envelope -->
+    <section class="page" data-p="6" hidden>
+      <header class="page-head"><span class="pseal" aria-hidden="true">六</span><div><span class="kicker">红包 · Hóngbāo</span><h2 tabindex="-1">Your red envelope</h2></div></header>
+      <div class="dessert">
+        <button class="envelope" id="envelope" aria-label="Open the red envelope">
+          <span class="flap"></span>
+          <span class="fu" aria-hidden="true">福</span>
+          <span class="tag"><span>红包</span>Tap to open</span>
+        </button>
+        <div class="gift" id="letter" hidden>
+          <div class="voucher">
+            <div class="v-brand" id="vbrand" hidden></div>
+            <span class="v-brandname" id="vname"></span>
+            <span class="v-amount" id="vamount"></span>
+            <code id="vcode"></code>
+            <button class="btn primary" id="copy">Copy code</button>
+            <span class="msg" id="copymsg" aria-live="polite"></span>
+          </div>
+          <p class="alles">Alles Gueti zum Gebüri!</p>
+          <div class="from">
+            <span class="v-label">With love from</span>
+            <span class="from-name" id="from-name"></span>
+            <span class="from-list" id="from-list"></span>
+          </div>
+        </div>
+      </div>
+      <div class="page-foot"><button class="btn" data-prev>← Back</button><span class="pno">6 / 6</span><span></span></div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+/* ===== Edit these ===== */
+const CONFIG = {
+  name: "Rares",
+  from: "Iogridacri Vlarariu (+Mihaela)",
+  fromList: ["Cristi & Dana", "Ionut & Mihaela", "Grigo & Vlad", "Valeriu"],
+  prize: { brand: "Galaxus", value: 300 },
+  voucherImage: "",               // brand image, embedded as a data: URI
+  sealed: "Yk2JQmUzjQTEYUgu+laSiZHx4ZGPv0jHTPM8YrAMNd1w+PQc7l6wdHAb"  // voucher code, AES-GCM; the key is only in the NFC link (#key)
+};
+/* Wheel slices, clockwise from the top. Slice 0 is where it always lands; slice 1 is the near miss. */
+const SLICES = [
+  { brand: "Galaxus", value: 300,  c: "red" },
+  { brand: "Galaxus", value: 1000, c: "gold" },
+  { brand: "Zalando", value: 200,  c: "jade" },
+  { brand: "Migros",  value: 400,  c: "cream" },
+  { brand: "Globus",  value: 1000, c: "red" },
+  { brand: "Migros",  value: 200,  c: "gold" },
+  { brand: "Globus",  value: 300,  c: "jade" },
+  { brand: "Zalando", value: 400,  c: "cream" }
+];
+
+const dec = s => new TextDecoder().decode(Uint8Array.from(atob(s), c => c.charCodeAt(0)));
+const ANS = JSON.parse(dec("eyJ3b2siOiJXT0siLCJkaW1zdW0iOiJESU1TVU0iLCJmb25kdWUiOiJGT05EVUUiLCJkaXNoIjoiWk7DnE5JIn0="));
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const FINE = matchMedia("(pointer: fine)").matches;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+/* ===== State ===== */
+const KEY = "birthday-banquet-v3";
+let S = { page: 0, clues: {}, wordle: { guesses: [], over: false, won: false }, spun: false, opened: false };
+try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+
+/* ===== Personalisation ===== */
+const prizeLabel = `${CONFIG.prize.brand} · CHF ${CONFIG.prize.value}`;
+$("#cover-name").textContent = `${CONFIG.name}!`;
+$("#to-cover").textContent = `Menu for ${CONFIG.name}`;
+$("#from-name").textContent = CONFIG.from;
+$("#from-list").textContent = CONFIG.fromList.join(" · ");
+$("#vname").textContent = CONFIG.prize.brand;
+$("#vamount").textContent = `CHF ${CONFIG.prize.value}`;
+$("#win-title").textContent = prizeLabel;
+if (CONFIG.voucherImage) {
+  const img = document.createElement("img");
+  img.src = CONFIG.voucherImage; img.alt = `${CONFIG.prize.brand} voucher`;
+  $("#vbrand").replaceChildren(img); $("#vbrand").classList.add("has-img"); $("#vbrand").hidden = false;
+}
+
+/* ===== Pages ===== */
+const PAGES = $$(".page");
+const LABELS = ["Starter", "Starter", "Starter", "Main", "Dessert", "红包"];
+const NUMS = ["一", "二", "三", "四", "五", "六"];
+let cur = 0, busy = false;
+
+function pageDone(i) {
+  if (i === 0) return true;
+  if (i <= 3) { const c = S.clues[CLUES[i - 1].id]; return !!(c && (c.solved || c.revealed)); }
+  if (i === 4) return S.wordle.over;
+  if (i === 5) return S.spun;
+  return S.opened;
+}
+function maxReach() { let i = 0; while (i < 6 && pageDone(i)) i++; return i; }
+
+function buildProg() {
+  const ol = $("#prog");
+  NUMS.forEach((n, k) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<button data-go="${k + 1}"><span class="s">${n}</span><span class="lbl">${LABELS[k]}</span></button>`;
+    ol.appendChild(li);
+  });
+  ol.addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b) goTo(+b.dataset.go); });
+}
+
+function goTo(n) {
+  if (busy || n === cur || n < 0 || n > maxReach()) return;
+  const from = PAGES[cur], to = PAGES[n], fwd = n > cur;
+  const top = $("#top");
+  if (top.getBoundingClientRect().top < 0) top.scrollIntoView({ block: "start", behavior: REDUCED ? "auto" : "smooth" });
+  cur = n; S.page = n; save();
+  to.hidden = false;
+  if (REDUCED) { from.hidden = true; refresh(); arrive(to); return; }
+  busy = true;
+  if (fwd) from.classList.add("turn-out");
+  else { from.classList.add("under"); to.classList.add("turn-in"); }
+  refresh();
+  setTimeout(() => {
+    from.hidden = true;
+    from.classList.remove("turn-out", "under");
+    to.classList.remove("turn-in");
+    busy = false;
+    arrive(to);
+  }, 980);
+}
+function arrive(page) {
+  const input = $("input:not(:disabled)", page);
+  if (input && FINE) input.focus({ preventScroll: true });
+  else $("h1,h2", page)?.focus({ preventScroll: true });
+}
+document.addEventListener("click", e => {
+  if (e.target.closest("[data-next]")) goTo(cur + 1);
+  else if (e.target.closest("[data-prev]")) goTo(cur - 1);
+});
+$("#to-cover").addEventListener("click", () => goTo(0));
+
+/* ===== Cryptic clues ===== */
+const CLUES = [
+  { id: "wok", groups: [3],
+    parts: [["Pan", "def"], [" "], ["seen backwards in", "ind"], [" "], ["Kow", "fod"], ["loon"]],
+    explain: "“Pan” is the definition. “Seen … in” says the answer is hiding inside the next word, and “backwards” says to read it in reverse: K-O-W in KOWloon, flipped, gives WOK." },
+  { id: "dimsum", groups: [3, 3],
+    parts: [["Faint", "fod"], [" "], ["total", "fod"], [" for "], ["a Cantonese brunch", "def"]],
+    explain: "This one is built from two pieces. Faint = DIM, total = SUM. Put them together and you get the definition, a Cantonese brunch: DIM SUM." },
+  { id: "fondue", groups: [6],
+    parts: [["Swiss dish", "def"], [" "], ["found E", "fod"], ["nglish"], [" "], ["cooking", "ind"]],
+    explain: "“Swiss dish” is the definition. Take FOUND plus E (the usual crossword short form of English), and “cooking” tells you to stir the letters around: FOUNDE becomes FONDUE." }
+];
+const HINT_LABELS = ["Hint: show the definition", "Hint: explain the wordplay", "Reveal the answer"];
+
+function buildClues() {
+  CLUES.forEach((c, i) => {
+    const st = S.clues[c.id] || (S.clues[c.id] = { hint: 0, solved: false, revealed: false });
+    const n = c.groups.reduce((a, b) => a + b, 0);
+    const el = document.createElement("article");
+    el.className = "basket"; el.id = "b-" + c.id;
+    const clueHtml = c.parts.map(([t, r]) => r ? `<span data-r="${r}">${t}</span>` : t).join("");
+    let bi = 0;
+    const boxes = c.groups.map(g => `<span class="group">${Array.from({ length: g }, () => `<span class="box" data-i="${bi++}"></span>`).join("")}</span>`).join("");
+    el.innerHTML = `
+      <div class="basket-head"><span class="stamp" hidden></span></div>
+      <p class="clue">${clueHtml} <span class="enum">(${c.groups.join(",")})</span></p>
+      <div class="legend"><span><i style="background:var(--jade)"></i>definition</span><span><i style="background:var(--lacquer)"></i>wordplay pieces</span><span><i style="background:var(--gold)"></i>signal words</span></div>
+      <label class="boxes">${boxes}
+        <input id="in-${c.id}" type="text" maxlength="${n}" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" aria-label="Answer, ${n} letters">
+      </label>
+      <p class="explain" hidden>${c.explain}</p>
+      <div class="row-actions"><button class="btn hint-btn"></button><span class="msg" aria-live="polite"></span></div>`;
+    $(`.page[data-p="${i + 1}"] .slot`).appendChild(el);
+    const input = $("input", el);
+    input.addEventListener("input", () => {
+      input.value = input.value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, n);
+      paintBoxes(c);
+      const msg = $(".msg", el); msg.textContent = ""; msg.className = "msg";
+      if (input.value.length === n) check(c);
+    });
+    input.addEventListener("focus", () => paintBoxes(c));
+    input.addEventListener("blur", () => paintBoxes(c));
+    input.addEventListener("keydown", e => { if (e.key === "Enter" && (st.solved || st.revealed)) goTo(cur + 1); });
+    $(".hint-btn", el).addEventListener("click", () => {
+      st.hint = Math.min(3, st.hint + 1);
+      if (st.hint === 3) st.revealed = true;
+      save(); renderClue(c); refresh();
+    });
+    renderClue(c);
+  });
+}
+function paintBoxes(c) {
+  const el = $("#b-" + c.id), input = $("input", el), v = input.value, focused = document.activeElement === input;
+  const all = $$(".box", el);
+  all.forEach((b, i) => {
+    b.textContent = v[i] || "";
+    b.classList.toggle("full", !!v[i]);
+    b.classList.toggle("cur", focused && i === Math.min(v.length, all.length - 1));
+  });
+}
+function check(c) {
+  const el = $("#b-" + c.id);
+  if ($("input", el).value === ANS[c.id]) {
+    S.clues[c.id].solved = true; save(); renderClue(c); refresh();
+  } else {
+    const box = $(".boxes", el);
+    box.classList.remove("shake"); void box.offsetWidth; box.classList.add("shake");
+    const msg = $(".msg", el); msg.textContent = "Sent back to the kitchen. Try again, or take a hint."; msg.className = "msg bad";
+  }
+}
+function renderClue(c) {
+  const el = $("#b-" + c.id), st = S.clues[c.id], input = $("input", el);
+  const done = st.solved || st.revealed;
+  $(".clue", el).classList.toggle("show-def", st.hint >= 1 || done);
+  $(".clue", el).classList.toggle("show-wp", st.hint >= 2 || done);
+  el.classList.toggle("wp", st.hint >= 2 || done);
+  $(".explain", el).hidden = !(st.hint >= 2 || done);
+  const hb = $(".hint-btn", el);
+  hb.hidden = done; hb.textContent = HINT_LABELS[Math.min(st.hint, 2)];
+  const stamp = $(".stamp", el);
+  stamp.hidden = !done;
+  stamp.textContent = st.solved ? "已解 solved" : "revealed";
+  stamp.classList.toggle("revealed", !st.solved);
+  $(".boxes", el).classList.toggle("solved", st.solved);
+  $(".boxes", el).classList.toggle("revealed-state", !st.solved && st.revealed);
+  if (done) { input.value = ANS[c.id]; input.disabled = true; }
+  const msg = $(".msg", el);
+  if (done) { msg.textContent = st.solved ? "Clean plate. You can turn the page." : "Answer revealed. You can turn the page."; msg.className = st.solved ? "msg good" : "msg"; }
+  paintBoxes(c);
+}
+
+/* ===== Guess the dish (Swiss QWERTZ) ===== */
+const ROWS = ["QWERTZUIOPÜ", "ASDFGHJKLÖÄ", "↵YXCVBNM⌫"];
+const TARGET = [...ANS.dish];
+let current = "";
+
+function evaluate(guess) {
+  const g = [...guess], res = Array(5).fill("a"), pool = {};
+  TARGET.forEach((ch, i) => { if (g[i] === ch) res[i] = "c"; else pool[ch] = (pool[ch] || 0) + 1; });
+  g.forEach((ch, i) => { if (res[i] !== "c" && pool[ch]) { res[i] = "p"; pool[ch]--; } });
+  return res;
+}
+function buildBoard() {
+  const b = $("#board");
+  for (let r = 0; r < 6; r++) {
+    const row = document.createElement("div"); row.className = "wrow";
+    for (let i = 0; i < 5; i++) { const t = document.createElement("div"); t.className = "tile"; row.appendChild(t); }
+    b.appendChild(row);
+  }
+  const kb = $("#kb");
+  ROWS.forEach(r => {
+    const row = document.createElement("div"); row.className = "kb-row";
+    [...r].forEach(k => {
+      const btn = document.createElement("button");
+      btn.className = "key"; btn.dataset.k = k; btn.textContent = k;
+      if (k === "↵") { btn.classList.add("wide"); btn.textContent = "Enter"; btn.dataset.k = "ENTER"; }
+      if (k === "⌫") { btn.classList.add("wide"); btn.dataset.k = "BACK"; btn.setAttribute("aria-label", "Delete letter"); }
+      row.appendChild(btn);
+    });
+    kb.appendChild(row);
+  });
+  kb.addEventListener("click", e => { const k = e.target.closest(".key"); if (k) press(k.dataset.k); });
+  document.addEventListener("keydown", e => {
+    if (cur !== 4 || busy || S.wordle.over || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.target.tagName === "INPUT") return;
+    if (e.key === "Enter") { e.preventDefault(); press("ENTER"); }
+    else if (e.key === "Backspace") press("BACK");
+    else if (/^[a-zäöü]$/i.test(e.key)) press(e.key.toUpperCase());
+  });
+}
+function press(k) {
+  const W = S.wordle;
+  if (W.over) return;
+  const msg = $("#wmsg"); msg.className = "msg wmsg";
+  if (k === "BACK") { current = [...current].slice(0, -1).join(""); msg.textContent = ""; }
+  else if (k === "ENTER") {
+    if ([...current].length < 5) {
+      msg.textContent = "Five letters, please."; msg.classList.add("bad");
+      const row = $("#board").children[W.guesses.length];
+      row.classList.remove("shake"); void row.offsetWidth; row.classList.add("shake");
+      return;
+    }
+    W.guesses.push(current); current = "";
+    if (W.guesses[W.guesses.length - 1] === ANS.dish) { W.won = true; W.over = true; }
+    else if (W.guesses.length >= 6) W.over = true;
+    save(); renderBoard(W.guesses.length - 1); refresh(); return;
+  }
+  else if ([...current].length < 5) current += k;
+  renderBoard();
+}
+function renderBoard(flipRow = -1) {
+  const W = S.wordle, rows = $("#board").children, keyState = {}, rank = { a: 1, p: 2, c: 3 };
+  for (let r = 0; r < 6; r++) {
+    const tiles = rows[r].children;
+    const g = r < W.guesses.length ? [...W.guesses[r]] : (r === W.guesses.length && !W.over ? [...current] : []);
+    const ev = r < W.guesses.length ? evaluate(W.guesses[r]) : null;
+    for (let i = 0; i < 5; i++) {
+      const t = tiles[i];
+      t.textContent = g[i] || "";
+      t.className = "tile" + (g[i] ? " filled" : "") + (ev ? " " + ev[i] : "");
+      if (ev && r === flipRow) { t.classList.add("flip"); t.style.animationDelay = (i * 0.12) + "s"; }
+      else t.style.animationDelay = "";
+      if (ev && (!keyState[g[i]] || rank[ev[i]] > rank[keyState[g[i]]])) keyState[g[i]] = ev[i];
+    }
+  }
+  $$("#kb .key").forEach(k => {
+    k.classList.remove("c", "p", "a");
+    if (keyState[k.dataset.k]) k.classList.add(keyState[k.dataset.k]);
+  });
+  const hints = [];
+  if (W.guesses.length >= 2 || W.over) hints.push("Hint: it's Swiss German, and it's a small meal. You'll need one of the umlaut keys.");
+  if (W.guesses.length >= 4 || W.over) hints.push("Hint: it's named after the hour you eat it. Think nine o'clock, or \"nüüni\".");
+  $("#whints").innerHTML = hints.map(h => `<p class="whint">${h}</p>`).join("");
+  $("#znuni").hidden = !W.over;
+  const msg = $("#wmsg");
+  if (W.won) { msg.textContent = `ZNÜNI in ${W.guesses.length}! En Guete. You can turn the page.`; msg.className = "msg wmsg good"; }
+  else if (W.over) { msg.textContent = "Out of chopsticks. The dish was ZNÜNI, but dessert is yours anyway."; msg.className = "msg wmsg"; }
+}
+
+/* ===== Wheel of fortune ===== */
+const SEG = 360 / SLICES.length;
+const LAND_AT = SEG - 8;                 // lands 8° inside slice 0, right after passing slice 1
+const SPIN_TO = 360 * 7 - LAND_AT;
+let spinning = false;
+
+function buildWheel() {
+  const R = 150, pt = (a, r) => [r * Math.sin(a * Math.PI / 180), -r * Math.cos(a * Math.PI / 180)].map(v => v.toFixed(2)).join(",");
+  let slices = "", texts = "", lights = "";
+  SLICES.forEach((s, k) => {
+    const a0 = k * SEG, a1 = a0 + SEG, mid = a0 + SEG / 2, win = k === 0 ? " winner" : "";
+    slices += `<path class="slice${win}" d="M0,0 L${pt(a0, R)} A${R},${R} 0 0 1 ${pt(a1, R)} Z" fill="var(--w-${s.c})" stroke="var(--w-gold)" stroke-width="1.5"/>`;
+    const ink = `var(--w-${s.c}-ink)`;
+    texts += `<g class="stxt${win}" transform="rotate(${mid})" fill="${ink}" text-anchor="middle">
+      <text class="w-brand" y="-122">${s.brand.toUpperCase()}</text>
+      <text class="w-val" y="-94">${s.value}</text>
+      <text class="w-chf" y="-80">CHF</text></g>`;
+  });
+  for (let i = 0; i < 24; i++) { const [x, y] = pt(i * 15, 158).split(","); lights += `<circle cx="${x}" cy="${y}" r="2.6" fill="${i % 2 ? "var(--w-cream)" : "var(--w-gold)"}"/>`; }
+  $("#wheel").innerHTML = `
+    <circle r="166" fill="var(--w-red)"/>
+    <circle r="164" fill="none" stroke="var(--w-gold)" stroke-width="2"/>
+    <g id="rot">${slices}${texts}${lights}</g>
+    <circle r="152" fill="none" stroke="var(--w-gold)" stroke-width="3"/>
+    <circle r="34" fill="var(--w-gold)" stroke="var(--w-red)" stroke-width="3"/>
+    <circle r="28" fill="none" stroke="var(--w-red)" stroke-width="1.2"/>
+    <text y="12" text-anchor="middle" fill="var(--w-red)" style="font-family:var(--f-brush);font-size:34px">福</text>
+    <g id="pointer"><path d="M-14,-176 L14,-176 L0,-138 Z" fill="var(--w-red)" stroke="var(--w-gold)" stroke-width="3" stroke-linejoin="round"/></g>`;
+}
+const setRot = r => $("#rot").setAttribute("transform", `rotate(${r.toFixed(3)})`);
+function tick(ctx) {
+  if (!ctx) return;
+  try {
+    const o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime;
+    o.type = "triangle"; o.frequency.value = 1500;
+    g.gain.setValueAtTime(0.04, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+    o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + 0.06);
+  } catch (e) {}
+}
+function spin() {
+  if (S.spun || spinning) return;
+  spinning = true; $("#spin").disabled = true; $("#spin").textContent = "Spinning…";
+  let ctx = null; try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+  const dur = REDUCED ? 1200 : 7200, t0 = performance.now(), ptr = $("#pointer");
+  let last = -1, flick = 0;
+  const frame = now => {
+    const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 4), r = SPIN_TO * e;
+    setRot(r);
+    const idx = Math.floor((((-r) % 360) + 360) % 360 / SEG);
+    if (idx !== last) { if (last !== -1) { flick = -24; tick(ctx); } last = idx; }
+    flick *= 0.78;
+    ptr.setAttribute("transform", `rotate(${flick.toFixed(2)} 0 -170)`);
+    if (p < 1) requestAnimationFrame(frame);
+    else { spinning = false; S.spun = true; save(); showWin(true); refresh(); }
+  };
+  requestAnimationFrame(frame);
+}
+function showWin(animate) {
+  setRot(SPIN_TO);
+  $("#wheel").classList.add("won");
+  $("#spin").hidden = true;
+  const w = $("#win"); w.hidden = false;
+  if (!animate) w.style.animation = "none";
+}
+$("#spin").addEventListener("click", spin);
+
+/* ===== Red envelope ===== */
+const b64 = t => Uint8Array.from(atob(t.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat((4 - t.length % 4) % 4)), c => c.charCodeAt(0));
+function linkKey() {
+  let k = location.hash.replace(/^#/, "");
+  if (k) { try { localStorage.setItem(KEY + "-k", k); } catch (e) {} }
+  else { try { k = localStorage.getItem(KEY + "-k") || ""; } catch (e) {} }
+  return k;
+}
+const LINK_KEY = linkKey();
+async function unseal() {
+  try {
+    if (!LINK_KEY) return null;
+    const key = await crypto.subtle.importKey("raw", b64(LINK_KEY), "AES-GCM", false, ["decrypt"]);
+    const d = b64(CONFIG.sealed);
+    return new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: d.slice(0, 12) }, key, d.slice(12)));
+  } catch (e) { return null; }
+}
+function openEnvelope(animate) {
+  const env = $("#envelope");
+  env.classList.add("open"); env.setAttribute("aria-label", "Red envelope, opened"); env.disabled = true;
+  $(".tag", env).innerHTML = "<span>红包</span>Opened";
+  unseal().then(code => {
+    if (code) $("#vcode").textContent = code;
+    else { $("#vcode").textContent = "Locked"; $("#copy").hidden = true; $("#copymsg").textContent = "Open this page by tapping your birthday card to unlock the code."; }
+  });
+  S.opened = true; save(); refresh();
+  const show = () => { env.hidden = true; $("#letter").hidden = false; };
+  if (!animate) { $("#letter").style.animation = "none"; show(); return; }
+  setTimeout(show, REDUCED ? 0 : 800);
+}
+$("#envelope").addEventListener("click", () => openEnvelope(true));
+$("#copy").addEventListener("click", () => {
+  const code = $("#vcode").textContent, m = $("#copymsg");
+  const fallback = () => { const r = document.createRange(); r.selectNodeContents($("#vcode")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); m.textContent = "Selected. Press Ctrl/⌘ C to copy."; };
+  try { navigator.clipboard.writeText(code).then(() => { m.textContent = "Copied."; }, fallback); } catch (e) { fallback(); }
+});
+
+/* ===== Progress ===== */
+function refresh() {
+  const reach = maxReach();
+  $$("#prog li").forEach((li, k) => {
+    const p = k + 1;
+    li.className = (pageDone(p) ? "done " : "") + (p === cur ? "cur " : "") + (p > reach ? "locked" : "");
+    const b = $("button", li); b.disabled = p > reach;
+    b.setAttribute("aria-label", `Page ${p}, ${LABELS[k]}${p > reach ? ", locked" : ""}`);
+    if (p === cur) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+  });
+  $("#fill").style.width = `calc(${(Math.max(reach, 1) - 1) / 5} * (100% - 100% / 6))`;
+  PAGES.forEach((pg, i) => {
+    const ok = pageDone(i) && i < 6;
+    pg.classList.toggle("can-turn", ok);
+    const nb = $(".page-foot [data-next]", pg);
+    if (nb) {
+      nb.disabled = !ok;
+      nb.textContent = ok ? "Turn the page ↷" : (i === 5 ? "Spin first" : "Solve it first");
+    }
+  });
+}
+let resetArmed = false;
+$("#reset").addEventListener("click", e => {
+  if (!resetArmed) { resetArmed = true; e.target.textContent = "Tap again to clear all progress"; setTimeout(() => { resetArmed = false; e.target.textContent = "Start over"; }, 4000); return; }
+  try { localStorage.removeItem(KEY); } catch (err) {}
+  location.reload();
+});
+
+/* ===== Boot ===== */
+buildProg();
+buildClues();
+buildBoard();
+renderBoard();
+buildWheel();
+if (S.spun) showWin(false); else setRot(0);
+if (S.opened) openEnvelope(false);
+cur = Math.min(S.page || 0, maxReach());
+PAGES.forEach((p, i) => { p.hidden = i !== cur; });
+refresh();
+</script>
+
+</body>
+</html>
